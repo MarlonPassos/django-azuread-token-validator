@@ -50,6 +50,7 @@ In `settings.py`, configure the following variables:
 ```python
 # Azure AD authentication endpoint URL
 AZURE_AD_URL = "https://login.microsoftonline.com"
+
 # Azure AD JWKS endpoint URL (to fetch public verification keys) "https://login.microsoftonline.com/<tenant_id>/discovery/keys"
 AZURE_AD_TENANT_ID = "<tenant_id>"
 
