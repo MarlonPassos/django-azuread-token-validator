@@ -31,7 +31,6 @@ class AzureADTokenValidatorMiddleware:
             raise ImproperlyConfigured("Parâmetros obrigatórios do Azure AD não configurados.")
 
         self.extra_user_info_url: str | None = getattr(settings, "AZURE_AD_AUX_USERINFO_SERVICE_URL", None)
-        self.extra_user_info_token: str | None = getattr(settings, "AZURE_AD_AUX_USERINFO_SERVICE_TOKEN", None)
         self.extra_user_info_timeout: int = getattr(settings, "AZURE_AD_AUX_USERINFO_SERVICE_TIMEOUT", 10)
         self.extra_user_info_mapping: dict = getattr(
             settings,

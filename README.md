@@ -75,9 +75,6 @@ AZURE_AD_DEFAULT_APP_ROLE = "AppRole"
 # External service URL to fetch additional user information (optional)
 AZURE_AD_AUX_USERINFO_SERVICE_URL = "https://api.example.com/userinfo"
 
-# Bearer token for authenticating with the additional service (optional)
-AZURE_AD_AUX_USERINFO_SERVICE_TOKEN = "secret-token"
-
 # Timeout for requests to the additional service in seconds (default: 10)
 AZURE_AD_AUX_USERINFO_SERVICE_TIMEOUT = 10
 
