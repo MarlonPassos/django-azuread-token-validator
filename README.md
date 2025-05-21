@@ -143,16 +143,16 @@ AZURE_AD_URL = "https://login.microsoftonline.com"
 AZURE_AD_TENANT_ID = "<tenant_id>"
 
 # Grant type (must be "client_credentials")
-AZURE_AD_APP_SIIGO_GRANT_TYPE = "client_credentials"
+AZURE_AD_APP_GRANT_TYPE = "client_credentials"
 
 # Client ID registered in Azure AD
-AZURE_AD_APP_SIIGO_CLIENT_ID = "<client_id>"
+AZURE_AD_APP_CLIENT_ID = "<client_id>"
 
 # Client secret registered in Azure AD
-AZURE_AD_APP_SIIGO_CLIENT_SECRET = "<client_secret>"
+AZURE_AD_APP_CLIENT_SECRET = "<client_secret>"
 
 # Required access scope
-AZURE_AD_APP_SIIGO_SCOPE = "https://graph.microsoft.com/.default"
+AZURE_AD_APP_SCOPE = "https://graph.microsoft.com/.default"
 ```
 
 ---
