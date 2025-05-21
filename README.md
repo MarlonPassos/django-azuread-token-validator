@@ -48,20 +48,19 @@ MIDDLEWARE = [
 In `settings.py`, configure the following variables:
 
 ```python
-# Azure AD JWKS endpoint URL (to fetch public verification keys)
-AZURE_AD_JWKS_URL = "https://login.microsoftonline.com/<tenant_id>/discovery/keys"
+# Azure AD authentication endpoint URL
+AZURE_AD_URL = "https://login.microsoftonline.com"
+# Azure AD JWKS endpoint URL (to fetch public verification keys) "https://login.microsoftonline.com/<tenant_id>/discovery/keys"
+AZURE_AD_TENANT_ID = "<tenant_id>"
+
+# Expected client_id  identifier in the JWT token (usually the audience or App ID URI)
+AZURE_AD_CLIENT_ID = "api://<client_id>"
 
 # JWKS cache timeout in seconds (default: 3600)
 AZURE_AD_CACHE_TIMEOUT = 3600
 
 # Enable or disable token signature verification (default: True)
 AZURE_AD_VERIFY_SIGNATURE = True
-
-# Expected JWT token issuer (default: https://login.microsoftonline.com/<tenant_id>/v2.0)
-AZURE_AD_ISSUER_URL = "https://login.microsoftonline.com/<tenant_id>/v2.0"
-
-# Expected audience identifier in the JWT token (usually the client_id or App ID URI)
-AZURE_AD_CLIENT_ID = "api://<client_id>"
 
 # List of accepted JWT algorithms (default: ["RS256"])
 AZURE_AD_ALGORITHMS = ["RS256"]
@@ -73,6 +72,7 @@ AZURE_AD_DEFAULT_APP_USERNAME = "app"
 AZURE_AD_DEFAULT_APP_ROLE = "AppRole"
 
 # External service URL to fetch additional user information (optional)
+# Configure client_credentials authentication needed
 AZURE_AD_AUX_USERINFO_SERVICE_URL = "https://api.example.com/userinfo"
 
 # Timeout for requests to the additional service in seconds (default: 10)
