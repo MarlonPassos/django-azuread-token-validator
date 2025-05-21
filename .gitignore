@@ -1,0 +1,117 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Media files (upload dir) - ajuste conforme seu projeto
+media/
+staticfiles/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Environments
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# mypy
+.mypy_cache/
+
+# pyre type checker
+.pyre/
+
+# profiling data
+.prof
+
+# celery beat schedule file
+celerybeat-schedule
+
+# Sphinx documentation
+docs/_build/
+
+# dotenv
+.env.*
+
+# pytest cache
+.pytest_cache/
+
+# coverage reports
+.coverage.*
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# PyCharm
+.idea/
+
+# logs
+*.log
