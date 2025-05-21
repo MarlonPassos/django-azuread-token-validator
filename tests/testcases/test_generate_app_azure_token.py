@@ -23,10 +23,10 @@ class GenerateAppAzureTokenTests(TestCase):
 
         mock_settings.AZURE_AD_URL = "https://example.com"
         mock_settings.AZURE_AD_TENANT_ID = "tenant_id"
-        mock_settings.AZURE_AD_APP_SIIGO_GRANT_TYPE = "client_credentials"
-        mock_settings.AZURE_AD_APP_SIIGO_CLIENT_ID = "client_id"
-        mock_settings.AZURE_AD_APP_SIIGO_CLIENT_SECRET = "client_secret"
-        mock_settings.AZURE_AD_APP_SIIGO_SCOPE = "scope"
+        mock_settings.AZURE_AD_APP_GRANT_TYPE = "client_credentials"
+        mock_settings.AZURE_AD_APP_CLIENT_ID = "client_id"
+        mock_settings.AZURE_AD_APP_CLIENT_SECRET = "client_secret"
+        mock_settings.AZURE_AD_APP_SCOPE = "scope"
 
         mock_response = MagicMock()
         mock_response.json.return_value = {
@@ -85,10 +85,10 @@ class GenerateAppAzureTokenTests(TestCase):
 
         mock_settings.AZURE_AD_URL = "https://example.com"
         mock_settings.AZURE_AD_TENANT_ID = "tenant_id"
-        mock_settings.AZURE_AD_APP_SIIGO_GRANT_TYPE = "client_credentials"
-        mock_settings.AZURE_AD_APP_SIIGO_CLIENT_ID = "client_id"
-        mock_settings.AZURE_AD_APP_SIIGO_CLIENT_SECRET = "client_secret"
-        mock_settings.AZURE_AD_APP_SIIGO_SCOPE = "scope"
+        mock_settings.AZURE_AD_APP_GRANT_TYPE = "client_credentials"
+        mock_settings.AZURE_AD_APP_CLIENT_ID = "client_id"
+        mock_settings.AZURE_AD_APP_CLIENT_SECRET = "client_secret"
+        mock_settings.AZURE_AD_APP_SCOPE = "scope"
 
         mock_response = MagicMock()
         mock_response.json.return_value = {

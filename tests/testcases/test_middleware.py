@@ -3,9 +3,9 @@ import jwt
 from datetime import datetime, timedelta, timezone
 
 AZURE_SETTINGS = {
-    "AZURE_AD_JWKS_URL": "https://example.com/keys",  # Dummy URL
-    "AZURE_AD_AUDIENCE": "api://dummy-client-id",
-    "AZURE_AD_ISSUER_URL": "https://login.microsoftonline.com/tenant-id/v2.0",
+    "AZURE_AD_URL": "https://example.com",  # Dummy URL
+    "AZURE_AD_TENANT_ID": "tenant-id",  # Dummy URL
+    "AZURE_AD_CLIENT_ID": "api://dummy-client-id",
     "AZURE_AD_VERIFY_SIGNATURE": False,  # Desativa verificação para testes
     "AZURE_AD_USER_APPLICATION": "test_app",
     "AZURE_AD_ROLE_APPLICATION": "TestAppRole",
@@ -17,16 +17,16 @@ class MiddlewareIntegrationTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.secret = "dummy-secret"
-        self.issuer = AZURE_SETTINGS["AZURE_AD_ISSUER_URL"]
-        self.audience = AZURE_SETTINGS["AZURE_AD_AUDIENCE"]
+        self.tenant_id = AZURE_SETTINGS["AZURE_AD_TENANT_ID"]
+        self.client_id = AZURE_SETTINGS["AZURE_AD_CLIENT_ID"]
 
     def _generate_token(self, claims=None):
         now = datetime.now(timezone.utc)
         if claims is None:
             claims = {
                 "preferred_username": "john.doe@example.com",
-                "aud": self.audience,
-                "iss": self.issuer,
+                "aud": self.client_id,
+                "iss": self.tenant_id,
                 "exp": int((now + timedelta(hours=1)).timestamp()),
             }
         return jwt.encode(claims, self.secret, algorithm="HS256")
@@ -61,8 +61,8 @@ class MiddlewareIntegrationTests(TestCase):
         """Deve retornar 401 se o token não possuir 'preferred_username'."""
         token = self._generate_token(
             {
-                "aud": self.audience,
-                "iss": self.issuer,
+                "aud": self.client_id,
+                "iss": self.tenant_id,
                 "exp": int((datetime.now(timezone.utc) + timedelta(hours=1)).timestamp()),
                 "upn": "test user",
             }
