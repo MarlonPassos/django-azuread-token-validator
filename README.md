@@ -61,7 +61,7 @@ AZURE_AD_VERIFY_SIGNATURE = True
 AZURE_AD_ISSUER_URL = "https://login.microsoftonline.com/<tenant_id>/v2.0"
 
 # Expected audience identifier in the JWT token (usually the client_id or App ID URI)
-AZURE_AD_AUDIENCE = "api://<client_id>"
+AZURE_AD_CLIENT_ID = "api://<client_id>"
 
 # List of accepted JWT algorithms (default: ["RS256"])
 AZURE_AD_ALGORITHMS = ["RS256"]

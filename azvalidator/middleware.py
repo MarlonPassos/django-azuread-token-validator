@@ -21,13 +21,13 @@ class AzureADTokenValidatorMiddleware:
         self._load_settings()
 
     def _load_settings(self):
-        self.jwks_url: str = getattr(settings, "AZURE_AD_JWKS_URL", None)
+        self.tenant_id: str = getattr(settings, "AZURE_AD_TENANT_ID", None)
         self.verify_signature: bool = getattr(settings, "AZURE_AD_VERIFY_SIGNATURE", True)
         self.issuer_url: str = getattr(settings, "AZURE_AD_ISSUER_URL", None)
-        self.audience: str = getattr(settings, "AZURE_AD_AUDIENCE", None)
+        self.client_id: str = getattr(settings, "AZURE_AD_CLIENT_ID", None)
         self.algorithms: list[str] = getattr(settings, "AZURE_AD_ALGORITHMS", ["RS256"])
 
-        if not self.jwks_url or not self.issuer_url or not self.audience:
+        if not self.tenant_id or not self.issuer_url or not self.client_id:
             raise ImproperlyConfigured("Parâmetros obrigatórios do Azure AD não configurados.")
 
         self.extra_user_info_url: str | None = getattr(settings, "AZURE_AD_AUX_USERINFO_SERVICE_URL", None)
@@ -66,17 +66,19 @@ class AzureADTokenValidatorMiddleware:
 
         try:
             if self.verify_signature:
-                signing_key = PyJWKClient(self.jwks_url).get_signing_key_from_jwt(token)
+                jwk_url = f"https://login.microsoftonline.com/{self.tenant_id}/discovery/keys"
+                signing_key = PyJWKClient(jwk_url).get_signing_key_from_jwt(token)
                 key = signing_key.key
             else:
                 key = None  # Não valida a assinatura
 
+            issuer_url = f"https://login.microsoftonline.com/{self.tenant_id}/v2.0"
             decoded_token = jwt.decode(
                 token,
                 key=key,
                 algorithms=self.algorithms,
-                audience=self.audience,
-                issuer=self.issuer_url,
+                audience=self.client_id,
+                issuer=issuer_url,
                 options={"verify_signature": self.verify_signature},
             )
 
