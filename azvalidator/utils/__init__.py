@@ -29,10 +29,10 @@ def generate_app_azure_token() -> str:
     required_settings = [
         "AZURE_AD_URL",
         "AZURE_AD_TENANT_ID",
-        "AZURE_AD_APP_SIIGO_GRANT_TYPE",
-        "AZURE_AD_APP_SIIGO_CLIENT_ID",
-        "AZURE_AD_APP_SIIGO_CLIENT_SECRET",
-        "AZURE_AD_APP_SIIGO_SCOPE",
+        "AZURE_AD_APP_GRANT_TYPE",
+        "AZURE_AD_APP_CLIENT_ID",
+        "AZURE_AD_APP_CLIENT_SECRET",
+        "AZURE_AD_APP_SCOPE",
     ]
 
     for setting in required_settings:
@@ -44,10 +44,10 @@ def generate_app_azure_token() -> str:
 
     url = f"{settings.AZURE_AD_URL}/{settings.AZURE_AD_TENANT_ID}/oauth2/v2.0/token"
     data = {
-        "grant_type": settings.AZURE_AD_APP_SIIGO_GRANT_TYPE,
-        "client_id": settings.AZURE_AD_APP_SIIGO_CLIENT_ID,
-        "client_secret": settings.AZURE_AD_APP_SIIGO_CLIENT_SECRET,
-        "scope": settings.AZURE_AD_APP_SIIGO_SCOPE,
+        "grant_type": settings.AZURE_AD_APP_GRANT_TYPE,
+        "client_id": settings.AZURE_AD_APP_CLIENT_ID,
+        "client_secret": settings.AZURE_AD_APP_CLIENT_SECRET,
+        "scope": settings.AZURE_AD_APP_SCOPE,
     }
     response = requests.post(url, data=data)
     response.raise_for_status()

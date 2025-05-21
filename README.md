@@ -75,9 +75,6 @@ AZURE_AD_DEFAULT_APP_ROLE = "AppRole"
 # External service URL to fetch additional user information (optional)
 AZURE_AD_AUX_USERINFO_SERVICE_URL = "https://api.example.com/userinfo"
 
-# Bearer token for authenticating with the additional service (optional)
-AZURE_AD_AUX_USERINFO_SERVICE_TOKEN = "secret-token"
-
 # Timeout for requests to the additional service in seconds (default: 10)
 AZURE_AD_AUX_USERINFO_SERVICE_TIMEOUT = 10
 
@@ -143,16 +140,16 @@ AZURE_AD_URL = "https://login.microsoftonline.com"
 AZURE_AD_TENANT_ID = "<tenant_id>"
 
 # Grant type (must be "client_credentials")
-AZURE_AD_APP_SIIGO_GRANT_TYPE = "client_credentials"
+AZURE_AD_APP_GRANT_TYPE = "client_credentials"
 
 # Client ID registered in Azure AD
-AZURE_AD_APP_SIIGO_CLIENT_ID = "<client_id>"
+AZURE_AD_APP_CLIENT_ID = "<client_id>"
 
 # Client secret registered in Azure AD
-AZURE_AD_APP_SIIGO_CLIENT_SECRET = "<client_secret>"
+AZURE_AD_APP_CLIENT_SECRET = "<client_secret>"
 
 # Required access scope
-AZURE_AD_APP_SIIGO_SCOPE = "https://graph.microsoft.com/.default"
+AZURE_AD_APP_SCOPE = "https://graph.microsoft.com/.default"
 ```
 
 ---

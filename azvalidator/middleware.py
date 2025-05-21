@@ -6,6 +6,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http import JsonResponse
 from jwt import PyJWKClient, PyJWKClientError
 
+from azvalidator.utils import generate_app_azure_token
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,7 +31,6 @@ class AzureADTokenValidatorMiddleware:
             raise ImproperlyConfigured("Parâmetros obrigatórios do Azure AD não configurados.")
 
         self.extra_user_info_url: str | None = getattr(settings, "AZURE_AD_AUX_USERINFO_SERVICE_URL", None)
-        self.extra_user_info_token: str | None = getattr(settings, "AZURE_AD_AUX_USERINFO_SERVICE_TOKEN", None)
         self.extra_user_info_timeout: int = getattr(settings, "AZURE_AD_AUX_USERINFO_SERVICE_TIMEOUT", 10)
         self.extra_user_info_mapping: dict = getattr(
             settings,
@@ -124,7 +125,9 @@ class AzureADTokenValidatorMiddleware:
         return "upn" not in decoded and "preferred_username" not in decoded
 
     def _fetch_additional_user_info(self, username: str) -> dict:
-        headers = {"Authorization": f"Bearer {self.extra_user_info_token}"} if self.extra_user_info_token else {}
+        # Gera o token de acesso para o serviço auxiliar
+        userinfo_token = generate_app_azure_token()
+        headers = {"Authorization": f"Bearer {userinfo_token}"} if userinfo_token else {}
         url = f"{self.extra_user_info_url.rstrip('/')}/{username}/"
         try:
             response = requests.get(url, headers=headers, timeout=self.extra_user_info_timeout)
