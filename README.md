@@ -130,9 +130,17 @@ from azvalidator.utils import generate_app_azure_token
 access_token = generate_app_azure_token()
 print(f"Access token: {access_token}")
 ```
-
+#### Cache Configuration (New)
+To ensure proper caching of Azure AD tokens used by `generate_app_azure_token`, you must configure Django’s cache settings in your `settings.py`. For local development or testing, you can use the simple in-memory cache backend:
 Ensure the following variables are configured correctly for the function to work:
-
+```python 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+```
+#### Configuration for application authentication (client credentials)
 ```python
 # Azure AD authentication endpoint URL
 AZURE_AD_URL = "https://login.microsoftonline.com"
@@ -210,6 +218,7 @@ AZURE_AD_AUX_USERINFO_MAPPING = {
 - If the service is unavailable or an error occurs, the middleware logs the failure and continues the request without additional data.
 
 ---
+
 
 ## Tests
 
