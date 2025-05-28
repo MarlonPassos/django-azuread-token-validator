@@ -38,3 +38,9 @@ AZURE_AD_ISSUER_URL = "https://login.microsoftonline.com/common/v2.0"
 AZURE_AD_AUDIENCE = "api://test-client-id"
 AZURE_AD_ALGORITHMS = ["RS256"]
 AZURE_AD_VERIFY_SIGNATURE = False  # Para teste, pode desligar assinatura para facilitar
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
