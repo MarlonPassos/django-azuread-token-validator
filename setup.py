@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="django-azuread-token-validator",
-    version="0.1.8",
+    version="0.1.9",
     description="Django middleware to validate Azure AD JWT tokens and enrich requests with user data",
     long_description=long_description,
     long_description_content_type="text/markdown",
