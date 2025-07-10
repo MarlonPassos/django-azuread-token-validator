@@ -79,6 +79,12 @@ AZURE_AD_AUX_USERINFO_SERVICE_URL = "https://api.example.com/userinfo"
 # Timeout for requests to the additional service in seconds (default: 10)
 AZURE_AD_AUX_USERINFO_SERVICE_TIMEOUT = 10
 
+# Time in seconds to cache the Azure AD JWKS (JSON Web Key Set) used for token signature validation. Default is 3600 seconds (1 hour)
+AZURE_AD_JWK_CACHE_TIMEOUT = 3600  # 1 hora
+
+# Time in seconds to cache the additional user information retrieved from the external service. Default is 3600 seconds (1 hour).
+AZURE_AD_AUX_USERINFO_CACHE_TIMEOUT = 3600  # 1 hora
+
 # Mapping between fields returned by the additional service and request attributes
 # Format: {"service_field": "request_attribute_name"}
 AZURE_AD_AUX_USERINFO_MAPPING = {
@@ -87,6 +93,8 @@ AZURE_AD_AUX_USERINFO_MAPPING = {
     "company": "azure_company",
     "employee_number": "azure_employee_role",
 }
+
+
 ```
 
 ### 3. Usage in views
