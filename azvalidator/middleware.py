@@ -13,32 +13,21 @@ from azvalidator.utils import generate_app_azure_token
 logger = logging.getLogger(__name__)
 
 # TODO: Configurar cache de JWK e UserInfo
-# AZURE_AD_JWK_CACHE_TIMEOUT = 3600  # 1 hora
 # AZURE_AD_AUX_USERINFO_CACHE_TIMEOUT = 3600  # 1 hora
 
-def get_cached_jwk_key(jwk_url: str, token: str, cache_timeout: int = 3600):
-    """
-    Busca a chave pública (JWK) com cache compartilhado via Django cache.
-
-    :param jwk_url: URL do endpoint de descoberta de chaves públicas do Azure AD
-    :param token: Token JWT para extrair o kid
-    :param cache_timeout: Tempo de cache em segundos (default: 1 hora)
-    :return: Chave pública para validação do JWT
-    """
-    # Geração de chave do cache baseada no início do token
-    cache_key = f"azure_jwk::{jwk_url}::{token[:10]}"
-    cached_key = cache.get(cache_key)
-
-    if cached_key:
-        return cached_key
-
-    try:
-        jwk_client = PyJWKClient(jwk_url)
-        signing_key = jwk_client.get_signing_key_from_jwt(token).key
-        cache.set(cache_key, signing_key, timeout=cache_timeout)
-        return signing_key
-    except PyJWKClientError as e:
-        raise RuntimeError(f"Erro ao buscar JWK: {e}")
+try:
+    TENANT_ID = settings.AZURE_AD_TENANT_ID
+    AZURE_URL = settings.AZURE_AD_URL
+    JWKS_URL = f"{AZURE_URL}/{TENANT_ID}/discovery/keys"
+    # cache_keys=True ativa o cache interno, lifespan define a validade do cache.
+    jwk_client = PyJWKClient(JWKS_URL, cache_keys=True, lifespan=3600)
+    logger.info("Cliente JWK do Azure AD inicializado com cache.")
+except (AttributeError, ImproperlyConfigured):
+    jwk_client = None
+    logger.error("Configurações do Azure AD não encontradas. A validação de token não funcionará.")
+except Exception as e:
+    jwk_client = None
+    logger.error(f"Falha ao inicializar o cliente JWK do Azure AD: {e}")
 
 
 class AzureADTokenValidatorMiddleware:
@@ -49,6 +38,8 @@ class AzureADTokenValidatorMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
         self._load_settings()
+        if not jwk_client and self.verify_signature:
+            raise ImproperlyConfigured("Cliente JWK para validação de token do Azure não pôde ser inicializado.")
 
     def _load_settings(self):
         self.azure_url: str = getattr(settings, "AZURE_AD_URL", None)
@@ -76,7 +67,6 @@ class AzureADTokenValidatorMiddleware:
         self.default_app_username = getattr(settings, "AZURE_AD_DEFAULT_APP_USERNAME", "app")
         self.default_app_role = getattr(settings, "AZURE_AD_DEFAULT_APP_ROLE", "AppRole")
         self.cache_user_info_timeout = getattr(settings, "AZURE_AD_AUX_USERINFO_CACHE_TIMEOUT", 3600)
-        self.cache_jwk_timeout = getattr(settings, "AZURE_AD_JWK_CACHE_TIMEOUT", 3600)
 
     def __call__(self, request):
         return self.get_response(request)
@@ -98,9 +88,8 @@ class AzureADTokenValidatorMiddleware:
 
         try:
             if self.verify_signature:
-                jwk_url = f"{self.azure_url}/{self.tenant_id}/discovery/keys"
-                signing_key = get_cached_jwk_key(jwk_url, token, cache_timeout=self.cache_jwk_timeout)
-                key = signing_key
+                signing_key = jwk_client.get_signing_key_from_jwt(token)
+                key = signing_key.key
             else:
                 key = None  # Não valida a assinatura
 
