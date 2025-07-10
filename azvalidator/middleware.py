@@ -8,18 +8,13 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http import JsonResponse
 from jwt import PyJWKClient, PyJWKClientError
 
-from azvalidator.utils import generate_app_azure_token
-
 logger = logging.getLogger(__name__)
 
-# TODO: Configurar cache de JWK e UserInfo
-# AZURE_AD_AUX_USERINFO_CACHE_TIMEOUT = 3600  # 1 hora
 
 try:
     TENANT_ID = settings.AZURE_AD_TENANT_ID
     AZURE_URL = settings.AZURE_AD_URL
     JWKS_URL = f"{AZURE_URL}/{TENANT_ID}/discovery/keys"
-    # cache_keys=True ativa o cache interno, lifespan define a validade do cache.
     jwk_client = PyJWKClient(JWKS_URL, cache_keys=True, lifespan=3600)
     logger.info("Cliente JWK do Azure AD inicializado com cache.")
 except (AttributeError, ImproperlyConfigured):
@@ -66,7 +61,6 @@ class AzureADTokenValidatorMiddleware:
 
         self.default_app_username = getattr(settings, "AZURE_AD_DEFAULT_APP_USERNAME", "app")
         self.default_app_role = getattr(settings, "AZURE_AD_DEFAULT_APP_ROLE", "AppRole")
-        self.cache_user_info_timeout = getattr(settings, "AZURE_AD_AUX_USERINFO_CACHE_TIMEOUT", 3600)
 
     def __call__(self, request):
         return self.get_response(request)
@@ -122,12 +116,10 @@ class AzureADTokenValidatorMiddleware:
             request.azure_email = email
             request.userinfo = decoded_token
 
-            if self.extra_user_info_url and username and not self._is_client_credentials_token(decoded_token):
-                user_info = self._fetch_additional_user_info(username)
+            if self.extra_user_info_url:
+                user_info = self._fetch_additional_user_info(username, token)
                 for field, attr in self.extra_user_info_mapping.items():
                     setattr(request, attr, user_info.get(field, None))
-
-            request.userinfo = decoded_token
 
         except jwt.ExpiredSignatureError:
             return self._unauthorized("Token expirado.")
@@ -147,21 +139,22 @@ class AzureADTokenValidatorMiddleware:
     def _is_client_credentials_token(self, decoded: dict) -> bool:
         return "upn" not in decoded and "preferred_username" not in decoded
 
-    def _fetch_additional_user_info(self, username: str) -> dict:
+    def _fetch_additional_user_info(self, username: str, userinfo_token: str) -> dict:
         cache_key = f"azure_userinfo::{username}"
+
         cached_data = cache.get(cache_key)
-        if cached_data:
+        if cached_data is not None:
             return cached_data
 
-        userinfo_token = generate_app_azure_token()
         headers = {"Authorization": f"Bearer {userinfo_token}"} if userinfo_token else {}
         url = f"{self.extra_user_info_url.rstrip('/')}/{username}/"
-
         try:
             response = requests.get(url, headers=headers, timeout=self.extra_user_info_timeout)
             response.raise_for_status()
             data = response.json()
-            cache.set(cache_key, data, timeout=self.cache_user_info_timeout)
+            cache_timeout = getattr(settings, "AZURE_AD_AUX_USERINFO_CACHE_TIMEOUT", 3600)
+            cache.set(cache_key, data, timeout=cache_timeout)
+
             return data
         except requests.RequestException as e:
             logger.error(f"Erro ao buscar dados adicionais para '{username}': {e}")
